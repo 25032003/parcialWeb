@@ -1,6 +1,13 @@
 <template>
   <v-container fluid>
-    <v-row>
+    <!-- Loading state -->
+    <div v-if="loading" class="text-center pa-4">
+      <v-progress-circular indeterminate color="primary"></v-progress-circular>
+      <div class="mt-2">Cargando...</div>
+    </div>
+
+    <!-- Contenido principal -->
+    <v-row v-else>
       <!-- Sidebar -->
       <v-col cols="12" md="3">
         <v-card class="pa-4">
@@ -30,7 +37,13 @@
             class="mb-4"
           />
 
-          <v-btn block color="error" variant="tonal" @click="logout">
+          <v-btn 
+            block 
+            color="error" 
+            variant="tonal" 
+            :loading="loading"
+            @click="logout"
+          >
             Cerrar sesión
           </v-btn>
 
@@ -58,16 +71,38 @@
 import { onMounted, ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import UsersList from '@/views/UsersList.vue'
+import api from '@/services/api'
 
 type User = { id:number; nombre:string; email:string; rol:'admin'|'usuario' }
 
 const router = useRouter()
 const search = ref('')
-
 const user = ref<User | null>(null)
-onMounted(() => {
-  const raw = localStorage.getItem('user')
-  user.value = raw ? JSON.parse(raw) as User : null
+const loading = ref(false)
+
+// Verificar autenticación y obtener datos del usuario
+onMounted(async () => {
+  const token = localStorage.getItem('token')
+  
+  if (!token) {
+    router.push('/login')
+    return
+  }
+
+  try {
+    loading.value = true
+    // Verificar que el token sea válido obteniendo los datos del usuario
+    const response = await api.get('/user')
+    user.value = response.data
+    
+    // Actualizar localStorage con datos frescos del usuario
+    localStorage.setItem('user', JSON.stringify(response.data))
+  } catch (error) {
+    console.error('Error verificando autenticación:', error)
+    // El interceptor ya manejará el 401 y redirigirá al login
+  } finally {
+    loading.value = false
+  }
 })
 
 const isAdmin = computed(() => user.value?.rol === 'admin')
@@ -75,9 +110,19 @@ const isAdmin = computed(() => user.value?.rol === 'admin')
 const goAddUser = () => router.push('/usuarios/nuevo')
 const goTasks = () => router.push('/tareas')
 
-const logout = () => {
-  localStorage.removeItem('token')
-  localStorage.removeItem('user')
-  router.push('/login')
+const logout = async () => {
+  try {
+    loading.value = true
+    // Llamar al endpoint de logout para invalidar el token en el backend
+    await api.post('/logout')
+  } catch (error) {
+    console.error('Error al hacer logout:', error)
+  } finally {
+    // Limpiar datos locales
+    localStorage.removeItem('token')
+    localStorage.removeItem('user')
+    router.push('/login')
+    loading.value = false
+  }
 }
 </script>
