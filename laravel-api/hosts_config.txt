@@ -1,0 +1,12 @@
+# Configuración para sistema multitenant
+# Agregar estas líneas al archivo C:\Windows\System32\drivers\etc\hosts
+
+127.0.0.1 empresa1.localhost
+127.0.0.1 empresa2.localhost
+
+# Instrucciones:
+# 1. Abrir PowerShell como Administrador
+# 2. Ejecutar: notepad C:\Windows\System32\drivers\etc\hosts
+# 3. Agregar las líneas de arriba al final del archivo
+# 4. Guardar y cerrar
+# 5. Reiniciar el navegador

@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use Stancl\Tenancy\Middleware\InitializeTenancyByDomain;
-use Stancl\Tenancy\Middleware\PreventAccessFromCentralDomains;
 use App\Http\Controllers\Api\UsuarioController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\TareaController;
@@ -16,27 +14,18 @@ use App\Http\Controllers\Api\TareaController;
 |--------------------------------------------------------------------------
 |
 | Here you can register the tenant routes for your application.
-| These routes are loaded by the TenantRouteServiceProvider.
-|
-| Feel free to customize them however you want. Good luck!
+| These routes are loaded by the TenantRouteServiceProvider and will be
+| available on tenant domains like empresa1.localhost, empresa2.localhost
 |
 */
 
-Route::middleware([
-    'web',
-    InitializeTenancyByDomain::class,
-    PreventAccessFromCentralDomains::class,
-])->group(function () {
-    Route::get('/', function () {
-        return 'This is your multi-tenant application. The id of the current tenant is ' . tenant('id');
-    });
+// Web routes para tenants
+Route::get('/', function () {
+    return 'This is your multi-tenant application. The id of the current tenant is ' . tenant('id');
 });
 
 // API Routes para tenants
-Route::prefix('api')->middleware([
-    InitializeTenancyByDomain::class,
-    PreventAccessFromCentralDomains::class,
-])->group(function () {
+Route::prefix('api')->group(function () {
     
     // Rutas públicas (sin autenticación)
     Route::post('/register', [AuthController::class, 'register']);
