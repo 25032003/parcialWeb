@@ -38,24 +38,7 @@ Sistema web multitenant desarrollado con Laravel 10 y Vue.js 3 que permite a mú
 - **Gestión de Dependencias**: Composer (PHP) + npm (JS)
 - **Servidor de Desarrollo**: Laravel Artisan + Vite Dev Server
 
-## 🏗️ Arquitectura del Sistema
 
-```
-┌─────────────────────┐    ┌───────────────────────┐    ┌─────────────────────┐
-│   Frontend Vue.js   │    │    Laravel API        │    │    MySQL Cluster    │
-│   ┌───────────────┐ │    │ ┌─────────────────────┐│    │ ┌─────────────────┐ │
-│   │ empresa1.local│ │◄──►│ │  TempAuthController ││◄──►│ │ segundo_parcial │ │
-│   └───────────────┘ │    │ └─────────────────────┘│    │ │   (central)     │ │
-│   ┌───────────────┐ │    │ ┌─────────────────────┐│    │ └─────────────────┘ │
-│   │ empresa2.local│ │    │ │ TenantRouteProvider ││    │ ┌─────────────────┐ │
-│   └───────────────┘ │    │ └─────────────────────┘│    │ │    empresa1     │ │
-│                     │    │ ┌─────────────────────┐│    │ │   (tenant db)   │ │
-│   Vuetify + Axios   │    │ │   Stancl/Tenancy    ││    │ └─────────────────┘ │
-│   TypeScript SPA    │    │ └─────────────────────┘│    │ ┌─────────────────┐ │
-│                     │    │                       │    │ │    empresa2     │ │
-└─────────────────────┘    └───────────────────────┘    │ │   (tenant db)   │ │
-                                                        │ └─────────────────┘ │
-                                                        └─────────────────────┘
 ```
 
 ## 🚀 Enlaces Rápidos de Documentación
@@ -211,18 +194,6 @@ PUT    /api/tareas/{id}      # Actualizar tarea
 DELETE /api/tareas/{id}      # Eliminar tarea
 ```
 
-## 📈 Estado del Proyecto
-
-| Componente | Estado | Cobertura | Pruebas |
-|------------|---------|-----------|---------|
-| 🔐 **Autenticación** | ✅ Completo | 100% | ✅ Validado |
-| 👥 **CRUD Usuarios** | ✅ Completo | 100% | ✅ Validado |
-| 📋 **CRUD Tareas** | ✅ Completo | 100% | ✅ Validado |
-| 🏢 **Multitenant** | ✅ Completo | 100% | ✅ Validado |
-| 🎨 **Frontend UI** | ✅ Completo | 100% | ✅ Validado |
-| 📱 **Responsive** | ✅ Completo | 100% | ✅ Validado |
-| 🔧 **API REST** | ✅ Completo | 100% | ✅ Validado |
-| 🛡️ **Seguridad** | ✅ Completo | 100% | ✅ Validado |
 
 ## 🔐 Consideraciones de Seguridad
 
@@ -256,19 +227,6 @@ DELETE /api/tareas/{id}      # Eliminar tarea
 **Arquitectura**: SPA + API REST  
 **Desarrollo**: Septiembre 2025  
 
-## 📚 Documentación Adicional
 
-Para información más detallada, consulta los documentos específicos en cada sección:
 
-- **Instalación**: Guías paso a paso para desarrollo y producción
-- **API**: Documentación completa de endpoints con ejemplos
-- **Base de Datos**: Esquemas, relaciones y migraciones
-- **Frontend**: Componentes, routing y gestión de estado
-- **Arquitectura**: Patrones de diseño y decisiones técnicas
-- **Pruebas**: Casos de uso y validación manual
 
----
-
-📝 **Última actualización**: Septiembre 2025  
-🔄 **Versión**: 1.0.0  
-📋 **Licencia**: Proyecto Académico - Segundo Parcial
