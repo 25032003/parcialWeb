@@ -26,6 +26,14 @@ Route::get('/', function () {
 // Rutas temporales para testing (funcionan sin tenant)
 Route::post('/login', [TempAuthController::class, 'login']);
 Route::post('/register', [TempAuthController::class, 'register']);
+Route::post('/logout', [TempAuthController::class, 'logout']);
+
+// Ruta para obtener datos del usuario actual
+Route::get('/me', [TempAuthController::class, 'me']);
+Route::post('/logout', [TempAuthController::class, 'logout']);
+
+// Ruta para obtener datos del usuario actual
+Route::get('/me', [TempAuthController::class, 'me']);
 
 // Ruta protegida temporal
 Route::middleware('auth:sanctum')->group(function () {

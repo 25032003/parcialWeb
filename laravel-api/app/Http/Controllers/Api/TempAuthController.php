@@ -208,4 +208,61 @@ class TempAuthController extends Controller
             ], 500);
         }
     }
+
+    /**
+     * Obtener datos del usuario actual
+     */
+    public function me(Request $request)
+    {
+        $authHeader = $request->header('Authorization');
+        
+        if (!$authHeader || !str_starts_with($authHeader, 'Bearer ')) {
+            return response()->json(['message' => 'Token no proporcionado'], 401);
+        }
+        
+        $token = str_replace('Bearer ', '', $authHeader);
+        
+        try {
+            // Decodificar el token simple que creamos
+            $decoded = base64_decode($token);
+            $parts = explode(':', $decoded);
+            
+            if (count($parts) < 3) {
+                return response()->json(['message' => 'Token inválido'], 401);
+            }
+            
+            $email = $parts[0];
+            $empresa = $parts[1];
+            
+            // Buscar usuario en la empresa correspondiente
+            $usuario = DB::connection('mysql')
+                ->table("{$empresa}.usuarios")
+                ->where('email', $email)
+                ->first();
+                
+            if (!$usuario) {
+                return response()->json(['message' => 'Usuario no encontrado'], 404);
+            }
+            
+            return response()->json([
+                'id' => $usuario->id,
+                'nombre' => $usuario->nombre,
+                'email' => $usuario->email,
+                'rol' => $usuario->rol,
+                'empresa' => $empresa
+            ]);
+            
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Token inválido'], 401);
+        }
+    }
+    
+    /**
+     * Logout (invalidar token)
+     */
+    public function logout(Request $request)
+    {
+        // En nuestro sistema temporal, simplemente confirmamos el logout
+        return response()->json(['message' => 'Logout exitoso'], 200);
+    }
 }

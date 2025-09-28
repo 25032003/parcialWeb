@@ -92,7 +92,7 @@ onMounted(async () => {
   try {
     loading.value = true
     // Verificar que el token sea válido obteniendo los datos del usuario
-    const response = await api.get('/user')
+    const response = await api.get('/me')
     user.value = response.data
     
     // Actualizar localStorage con datos frescos del usuario
