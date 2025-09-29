@@ -30,14 +30,27 @@ Route::post('/logout', [TempAuthController::class, 'logout']);
 
 // Ruta para obtener datos del usuario actual
 Route::get('/me', [TempAuthController::class, 'me']);
-Route::post('/logout', [TempAuthController::class, 'logout']);
 
-// Ruta para obtener datos del usuario actual
-Route::get('/me', [TempAuthController::class, 'me']);
+// Rutas de usuarios temporales
+Route::middleware('temp.auth')->group(function () {
+    Route::get('/usuarios/listUsers', [TempAuthController::class, 'listUsers']);
+    Route::post('/usuarios/addUser', [TempAuthController::class, 'addUser']);
+});
+
+// Rutas de tareas temporales
+Route::middleware('temp.auth')->group(function () {
+    Route::get('/tareas', [TempAuthController::class, 'listTareas']);
+    Route::post('/tareas', [TempAuthController::class, 'addTarea']);
+    Route::put('/tareas/{id}', [TempAuthController::class, 'updateTarea']);
+    Route::delete('/tareas/{id}', [TempAuthController::class, 'deleteTarea']);
+});
 
 // Ruta protegida temporal
-Route::middleware('auth:sanctum')->group(function () {
+Route::middleware('temp.auth')->group(function () {
     Route::get('/user', function (Request $request) {
-        return $request->user();
+        return response()->json([
+            'user' => $request->attributes->get('auth_user'),
+            'empresa' => $request->attributes->get('auth_empresa')
+        ]);
     });
 });
